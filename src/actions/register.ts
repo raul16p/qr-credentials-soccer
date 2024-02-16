@@ -1,33 +1,35 @@
 "use server";
-import db from "@/lib/db";
+
+import * as z from "zod";
 import bcrypt from "bcrypt";
 
-export default async function registrarse(formData: FormData) {
-  try {
-    const rawData = {
-      fullName: formData.get("nombre") as string,
-      username: formData.get("username") as string,
-      password: formData.get("password") as string,
-    };
+import db from "@/lib/db";
+import { RegisterSchema } from "@/schema/auth";
+import { getUserByUsername } from "@/services/UserService";
 
-    const duplicatedUsername = await db.usuario.findFirst({
-      where: { username: formData.get("username") as string },
-    });
+export const register = async (values: z.infer<typeof RegisterSchema>) => {
+  const validatedFields = RegisterSchema.safeParse(values);
 
-    if (duplicatedUsername) {
-      return { message: "El nombre de usuario ya está en uso" };
-    }
-
-    const hashedPassword = await bcrypt.hash(rawData.password, 10);
-
-    await db.usuario.create({
-      data: {
-        nombre: rawData.fullName,
-        password: hashedPassword,
-        username: rawData.username,
-      },
-    });
-  } catch (error) {
-    return { error };
+  if (!validatedFields.success) {
+    return { error: "Campos inválidos!" };
   }
-}
+
+  const { username, password, nombre } = validatedFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const existingUser = await getUserByUsername(username);
+
+  if (existingUser) {
+    return { error: "El nombre de usuario ya está en uso!" };
+  }
+
+  await db.usuario.create({
+    data: {
+      nombre,
+      username,
+      password: hashedPassword,
+    },
+  });
+
+  return { success: "Registrado correctamente!" };
+};
