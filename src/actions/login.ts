@@ -20,7 +20,7 @@ export const login = async (
   const { username, password } = validatedFields.data;
 
   try {
-    //FIX: Redirect not working
+    //FIXME: Redirect not working
     let redirectPage = DEFAULT_LOGIN_REDIRECT;
     if (callbackUrl) redirectPage = callbackUrl;
 
