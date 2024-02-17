@@ -1,14 +1,15 @@
 "use client";
 
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { LoginSchema } from "@/schema/auth";
-import { Input } from "@/components/ui/input";
+import { login } from "@/actions/login";
+import { CardWrapper } from "@/components/auth/card-wrapper";
+import { FormError } from "@/components/form-error";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,19 +18,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { CardWrapper } from "@/components/auth/card-wrapper";
-import { Button } from "@/components/ui/button";
-import { FormError } from "@/components/form-error";
-import { login } from "@/actions/login";
+import { Input } from "@/components/ui/input";
+import { LoginSchema } from "@/schema/auth";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider!"
-      : "";
-
+  console.log("Callback URL: ", callbackUrl);
   const [error, setError] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
@@ -53,14 +48,14 @@ export const LoginForm = () => {
             setError(data.error);
           }
         })
-        .catch(() => setError("Something went wrong"));
+        .catch(() => setError("Ocurrió un error de servidor"));
     });
   };
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
+      headerLabel="Bienvenido de nuevo"
+      backButtonLabel="¿No tienes una cuenta?"
       backButtonHref="/auth/register"
     >
       <Form {...form}>
@@ -84,31 +79,18 @@ export const LoginForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="******"
-                      type="password"
-                    />
+                    <Input {...field} disabled={isPending} type="password" />
                   </FormControl>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    asChild
-                    className="px-0 font-normal"
-                  >
-                    <Link href="/auth/reset">Forgot password?</Link>
-                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <FormError message={error || urlError} />
+          <FormError message={error} />
           <Button disabled={isPending} type="submit" className="w-full">
-            {"Iniciar sesión"}
+            Iniciar sesión
           </Button>
         </form>
       </Form>

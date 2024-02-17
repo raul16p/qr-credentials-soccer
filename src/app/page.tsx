@@ -1,19 +1,16 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { currentUser } from "@/lib/auth-utils";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
+  const user = await currentUser();
 
   return (
     <main>
-      Bienvenido
       <nav className="">
-        <h1 className="text-xl font-bold">NextAuth</h1>
+        <h1 className="text-xl font-bold">Título de la App</h1>
         <div className="">
           <ul className="flex gap-x-2">
-            {!session?.user ? (
+            {!user ? (
               <>
                 <li>
                   <Link href="/">Home</Link>
@@ -29,9 +26,6 @@ export default async function Home() {
               <>
                 <li>
                   <Link href="/dashboard">Dashboard</Link>
-                </li>
-                <li>
-                  <Link href="/api/auth/signout">Logout</Link>
                 </li>
               </>
             )}

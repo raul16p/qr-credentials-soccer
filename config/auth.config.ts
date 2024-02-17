@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import type { NextAuthConfig, User } from "next-auth";
+import { getUserByUsername } from "@/repository/UserRepo";
+import bcrypt from "bcryptjs";
+import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { getUserByUsername } from "@/services/UserService";
 
 import { LoginSchema } from "@/schema/auth";
 
@@ -29,7 +29,7 @@ export default {
           );
 
           if (!passwordsMatch) {
-            throw new Error("Contraseña incorrecta");
+            return null;
           }
 
           return {

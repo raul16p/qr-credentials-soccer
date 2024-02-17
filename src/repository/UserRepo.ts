@@ -1,4 +1,5 @@
 import db from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export const getUserByUsername = async (username: string) => {
   try {
@@ -14,6 +15,17 @@ export const getUserById = async (id: number) => {
     const user = await db.usuario.findUnique({ where: { id } });
     return user;
   } catch {
+    return null;
+  }
+};
+
+export const createUser = async (data: Prisma.UsuarioCreateInput) => {
+  try {
+    const createdUser = await db.usuario.create({
+      data,
+    });
+    return createdUser;
+  } catch (error) {
     return null;
   }
 };
