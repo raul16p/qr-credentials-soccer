@@ -5,9 +5,3 @@ export const currentUser = async () => {
 
   return session?.user;
 };
-
-export const isAdmin = async () => {
-  const session = await auth();
-
-  return session?.user?.isAdmin;
-};

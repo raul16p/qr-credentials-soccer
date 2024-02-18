@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import qrcode from "qrcode";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 interface UserInfoProps {
   user: User;
@@ -45,7 +46,9 @@ export const UserInfo = async ({ user, label }: UserInfoProps) => {
           </p>
         </div>
         {user.isAdmin ? (
-          <Link href={"/partidos"}>Administrar partidos</Link>
+          <Link href={"/partidos"} className="py-3">
+            <Button>Administrar partidos</Button>
+          </Link>
         ) : (
           <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
             <p className="text-sm font-medium">Código QR de Jugador</p>

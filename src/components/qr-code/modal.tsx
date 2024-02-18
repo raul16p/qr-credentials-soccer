@@ -28,11 +28,11 @@ export default function ModalQR() {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Título</DialogTitle>
-            <DialogDescription>Descripción</DialogDescription>
+            <DialogTitle>Anotar un nuevo jugador</DialogTitle>
+            <DialogDescription>Descripción de este modal</DialogDescription>
           </DialogHeader>
           <Video setResult={setResult} setError={setError} setOpen={setOpen} />
-          <DialogFooter>{error}</DialogFooter>
+          <DialogFooter>{error && "Error: " + error}</DialogFooter>
         </DialogContent>
       </Dialog>
 

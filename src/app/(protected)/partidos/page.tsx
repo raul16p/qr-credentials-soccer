@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 const AdministrarPartidos = () => {
   return (
     <Card className="w-[600px]">
+      {/** Wrap components inside <AdminGate> when it's necessary to be an administrator */}
       <AdminGate>
         <FormSuccess message="Eres administrador y puedes crear partidos" />
         <ModalQR />

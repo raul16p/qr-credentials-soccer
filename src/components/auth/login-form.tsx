@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { login } from "@/actions/login";
+import { login } from "@/actions/auth/login";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,9 @@ import { LoginSchema } from "@/schema/auth";
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-  console.log("Callback URL: ", callbackUrl);
   const [error, setError] = useState<string | undefined>("");
-
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -47,8 +46,12 @@ export const LoginForm = () => {
             form.reset();
             setError(data.error);
           }
+          if (data?.url) {
+            router.refresh();
+            router.push(data.url);
+          }
         })
-        .catch(() => setError("Ocurrió un error de servidor"));
+        .catch((_err) => setError("Ocurrió un error de servidor"));
     });
   };
 

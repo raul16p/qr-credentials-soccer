@@ -1,16 +1,14 @@
-"use client";
-
 import { FormError } from "@/components/form-error";
-import { useAdmin } from "@/hooks/use-current-user";
+import { currentUser } from "@/lib/auth-utils";
 
 interface AdminGateProps {
   children: React.ReactNode;
 }
 
-export const AdminGate = ({ children }: AdminGateProps) => {
-  const isAdmin = useAdmin();
+export const AdminGate = async ({ children }: AdminGateProps) => {
+  const user = await currentUser();
 
-  if (!isAdmin) {
+  if (!user?.isAdmin) {
     return <FormError message="No tienes permiso de acceder a esta ruta" />;
   }
 

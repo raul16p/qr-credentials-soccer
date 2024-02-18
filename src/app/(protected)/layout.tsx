@@ -1,33 +1,24 @@
-"use client";
+// "use client";
 
-import { Button } from "@/components/ui/button";
 import { UserButton } from "@/components/auth/user-button";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import UserNavBar from "@/components/navbar/user-navbar";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
 const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
-  const pathname = usePathname();
   return (
     <div className="h-full w-full flex flex-col gap-y-10 items-center justify-center">
       <nav className="bg-secondary flex justify-between items-center p-4 rounded-xl w-[600px] shadow-sm">
         <div className="flex gap-x-2">
-          <Button
-            asChild
-            variant={pathname === "/dashboard" ? "default" : "outline"}
-          >
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
-          <Button
-            asChild
-            variant={pathname === "/partidos" ? "default" : "outline"}
-          >
-            <Link href="/partidos">Administrar partidos</Link>
-          </Button>
+          {/** Inside server components, we are able to render client components */}
+          <UserNavBar />
         </div>
+        {/**
+         * If this component were client-side, then <UserButton/>
+         * couldn't be rendered because it is server-side
+         */}
         <UserButton />
       </nav>
       {children}

@@ -20,19 +20,13 @@ export const login = async (
   const { username, password } = validatedFields.data;
 
   try {
-    //FIXME: Redirect not working
-    let redirectPage = DEFAULT_LOGIN_REDIRECT;
-    if (callbackUrl) redirectPage = callbackUrl;
-
-    console.log("REDIRECT PAGE", redirectPage);
-
-    await signIn("credentials", {
+    const url = await signIn("credentials", {
       username,
       password,
-      redirectTo: redirectPage,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+      redirect: false,
     });
-
-    console.log(redirectPage);
+    return { url };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -42,6 +36,6 @@ export const login = async (
           return { error: "Hubo un error de servidor" };
       }
     }
-    //throw error;
+    throw error;
   }
 };
